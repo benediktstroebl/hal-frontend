@@ -22,6 +22,26 @@
         .leaderboards-expanded {
             display: block !important;
         }
+        @media (max-width: 640px) {
+            .text-3xl {
+                font-size: 1.5rem !important;
+            }
+            .text-2xl {
+                font-size: 1.25rem !important;
+            }
+            .text-xl {
+                font-size: 1.125rem !important;
+            }
+            .text-lg {
+                font-size: 1rem !important;
+            }
+            .text-sm {
+                font-size: 0.875rem !important;
+            }
+            .text-xs {
+                font-size: 0.75rem !important;
+            }
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -68,11 +88,13 @@
             <div class="flex justify-between items-center h-full">
                 <div class="flex items-center">
                     <a class="text-4xl font-bold" href="/">HAL</a>
-                    {% block nav_title %}{% endblock %}
+                    <div class="hidden sm:block text-lg sm:text-xl md:text-2xl lg:text-3xl whitespace-nowrap overflow-hidden text-ellipsis">
+                        {% block nav_title %}{% endblock %}
+                    </div>
                 </div>
                 <div class="flex items-center gap-8">
                     <!-- Desktop Menu -->
-                    <div class="hidden md:flex space-x-8 items-center">
+                    <div class="hidden xl:flex space-x-8 items-center">
                         <div class="relative">
                             <button data-dropdown-toggle class="text-gray-700 hover:text-blue-600 transition-colors">
                                 Leaderboards
@@ -93,6 +115,8 @@
                                     <a href="{{ url_for('gaia') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">GAIA</a>
                                     <a href="{{ url_for('cybench') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Cybench</a>
                                     <a href="{{ url_for('agentharm') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">AgentHarm</a>
+                                    <a href="{{ url_for('taubench_retail') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">TAU-bench Retail</a>
+                                    <a href="{{ url_for('taubench_airline') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">TAU-bench Airline</a>
                                 </div>
                             </div>
                         </div>
@@ -106,12 +130,12 @@
                         <a href="https://www.princeton.edu" target="_blank" rel="noopener noreferrer">
                             <img src="{{ url_for('static', filename='princeton.png') }}" alt="Princeton Logo" class="h-12">
                         </a>
-                        <a href="https://pli.princeton.edu" target="_blank" rel="noopener noreferrer">
+                        <a href="https://pli.princeton.edu" target="_blank" rel="noopener noreferrer" class="hidden sm:block">
                             <img src="{{ url_for('static', filename='pli.png') }}" alt="PLI Logo" class="h-12">
                         </a>
                     </div>
                     <!-- Mobile menu button -->
-                    <button data-mobile-menu-button class="md:hidden p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                    <button data-mobile-menu-button class="xl:hidden p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                         </svg>
@@ -119,7 +143,7 @@
                 </div>
             </div>
             <!-- Mobile Menu -->
-            <div data-mobile-menu class="hidden md:hidden absolute top-24 left-0 w-full bg-white border-b border-gray-200 shadow-lg">
+            <div data-mobile-menu class="hidden xl:hidden absolute top-24 left-0 w-full bg-white border-b border-gray-200 shadow-lg">
                 <div class="px-4 py-2">
                     <div class="border-b border-gray-100">
                         <button data-mobile-leaderboards-button class="flex justify-between items-center w-full text-gray-700 hover:text-blue-600 transition-colors h-12">
@@ -140,6 +164,8 @@
                             <a href="{{ url_for('gaia') }}" class="block py-2 text-gray-700 hover:text-blue-600">GAIA</a>
                             <a href="{{ url_for('cybench') }}" class="block py-2 text-gray-700 hover:text-blue-600">Cybench</a>
                             <a href="{{ url_for('agentharm') }}" class="block py-2 text-gray-700 hover:text-blue-600">AgentHarm</a>
+                            <a href="{{ url_for('taubench_retail') }}" class="block py-2 text-gray-700 hover:text-blue-600">TAU-bench Retail</a>
+                            <a href="{{ url_for('taubench_airline') }}" class="block py-2 text-gray-700 hover:text-blue-600">TAU-bench Airline</a>
                         </div>
                     </div>
                     <a href="https://github.com/benediktstroebl/hal-harness/tree/main/agents" class="flex items-center h-12 text-gray-700 hover:text-blue-600 border-b border-gray-100">Add Agent</a>

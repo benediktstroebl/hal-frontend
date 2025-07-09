@@ -113,6 +113,7 @@ DEFAULT_PRICING = {
     "text-embedding-3-large": {"prompt_tokens": 0.13, "completion_tokens": 0},
     "gpt-4o-2024-05-13": {"prompt_tokens": 2.5, "completion_tokens": 10},
     "gpt-4o-2024-08-06": {"prompt_tokens": 2.5, "completion_tokens": 10},
+    "gpt-4o-2024-11-20": {"prompt_tokens": 2.5, "completion_tokens": 10},
     "gpt-3.5-turbo-0125": {"prompt_tokens": 0.5, "completion_tokens": 1.5},
     "gpt-3.5-turbo": {"prompt_tokens": 0.5, "completion_tokens": 1.5},
     "gpt-4-turbo-2024-04-09": {"prompt_tokens": 10, "completion_tokens": 30},
@@ -126,9 +127,11 @@ DEFAULT_PRICING = {
     "meta-llama/Llama-3-70b-chat-hf": {"prompt_tokens": 0.88, "completion_tokens": 0.88},
     "deepseek-ai/deepseek-coder-33b-instruct": {"prompt_tokens": 0.18, "completion_tokens": 0.18}, # these are set to the llama 8n prices
     "gpt-4o": {"prompt_tokens": 2.5, "completion_tokens": 10},
-    "o1-mini-2024-09-12": {"prompt_tokens": 3, "completion_tokens": 12},
+    "gpt-4.5-preview-2025-02-27": {"prompt_tokens": 75, "completion_tokens": 150},
+    "o1-mini-2024-09-12": {"prompt_tokens": 1.1, "completion_tokens": 4.4},
     "o1-preview-2024-09-12": {"prompt_tokens": 15, "completion_tokens": 60},
-    "o3-mini-2025-01-14": {"prompt_tokens": 15, "completion_tokens": 60},
+    "o3-mini-2025-01-14": {"prompt_tokens": 1.1, "completion_tokens": 4.4},
+    "o3-mini-2025-01-31": {"prompt_tokens": 1.1, "completion_tokens": 4.4},
     "claude-3-5-sonnet-20240620": {"prompt_tokens": 3, "completion_tokens": 15},
     "claude-3-5-sonnet-20241022": {"prompt_tokens": 3, "completion_tokens": 15},
     "us.anthropic.claude-3-5-sonnet-20240620-v1:0": {"prompt_tokens": 3, "completion_tokens": 15},
@@ -138,10 +141,12 @@ DEFAULT_PRICING = {
     "openai/gpt-4o-2024-11-20": {"prompt_tokens": 2.5, "completion_tokens": 10},
     "openai/gpt-4o-2024-08-06": {"prompt_tokens": 2.5, "completion_tokens": 10},
     "openai/gpt-4o-mini-2024-07-18": {"prompt_tokens": 0.15, "completion_tokens": 0.6},
-    "openai/o1-mini-2024-09-12": {"prompt_tokens": 3, "completion_tokens": 12},
+    "openai/gpt-4.5-preview-2025-02-27": {"prompt_tokens": 75, "completion_tokens": 150},
+    "openai/o1-mini-2024-09-12": {"prompt_tokens": 1.1, "completion_tokens": 4.4},
     "openai/o1-preview-2024-09-12": {"prompt_tokens": 15, "completion_tokens": 60},
     "openai/o1-2024-12-17": {"prompt_tokens": 15, "completion_tokens": 60},
-    "openai/o3-mini-2025-01-14": {"prompt_tokens": 15, "completion_tokens": 60},
+    "openai/o3-mini-2025-01-14": {"prompt_tokens": 1.1, "completion_tokens": 4.4},
+    "openai/o3-mini-2025-01-31": {"prompt_tokens": 1.1, "completion_tokens": 4.4},
     "anthropic/claude-3-5-sonnet-20240620": {"prompt_tokens": 3, "completion_tokens": 15},
     "anthropic/claude-3-5-sonnet-20241022": {"prompt_tokens": 3, "completion_tokens": 15},
     "google/gemini-1.5-pro": {"prompt_tokens": 1.25, "completion_tokens": 5},
@@ -151,6 +156,8 @@ DEFAULT_PRICING = {
     "us.meta.llama3-3-70b-instruct-v1:0": {"prompt_tokens": 0.88, "completion_tokens": 0.88},
     "Meta-Llama-3.1-405B-Instruct-Turbo": {"prompt_tokens": 3.5, "completion_tokens": 3.5},
     "together/meta-llama/Meta-Llama-3.1-70B-Instruct": {"prompt_tokens": 0.88, "completion_tokens": 0.88},
+    "claude-3-7-sonnet-20250219": {"prompt_tokens": 3, "completion_tokens": 15},
+    "anthropic/claude-3-7-sonnet-20250219": {"prompt_tokens": 3, "completion_tokens": 15},
 }
 
 class TracePreprocessor:
@@ -526,7 +533,14 @@ class TracePreprocessor:
                 df.loc[mask, 'prompt_tokens'] * prices['prompt_tokens'] / 1e6 +
                 df.loc[mask, 'completion_tokens'] * prices['completion_tokens'] / 1e6
             )
-                    
+            
+        # Sum total_cost for each run_id (if agents use multiple models, this will be the total cost for that run)
+        df_temp = df.groupby('run_id')['total_cost'].sum().reset_index()
+        df_temp = df_temp.rename(columns={'total_cost': 'total_cost_temp'})
+        df = df.merge(df_temp, on='run_id', how='left')
+        df['total_cost'] = df['total_cost_temp']
+        df = df.drop('total_cost_temp', axis=1)
+                                
         return df
 
     def get_parsed_results_with_costs(self, benchmark_name, pricing_config=None, aggregate=False):

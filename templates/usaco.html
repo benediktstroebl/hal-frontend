@@ -59,7 +59,7 @@
         <div class="bg-white rounded-xl shadow-md p-8 mb-8">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-3xl font-semibold">USACO Leaderboard</h3>
-                <div class="text-sm text-gray-500">Last updated: {{ last_updated }}</div>
+                
             </div>
             <div class="overflow-x-auto">
                 <table class="min-w-full">
@@ -216,7 +216,9 @@
                     This plot shows the relationship between an agent's performance and its token cost.
                     The Pareto frontier (dashed line) represents the current state-of-the-art trade-off. The error bars indicate min-max values across runs.
                 </p>
-                <div id="costAccuracyPlot" class="w-full h-[500px]"></div>
+                <div class="overflow-x-auto sm:overflow-x-visible">
+                    <div id="costAccuracyPlot" class="w-[800px] sm:w-full h-[500px]"></div>
+                </div>
             </div>
 
             <!-- Heatmap -->
@@ -225,7 +227,9 @@
                 <p class="text-sm text-gray-500 mb-4">
                     The heatmap visualizes success rates across tasks and agents. Colorscale shows the fraction of times a task was solved across reruns of the same agent. The "any agent" performance indicates the level of saturation of the benchmark and gives a sense of overall progress.
                 </p>
-                <div id="taskSuccessHeatmap" class="w-full h-[500px]"></div>
+                <div class="overflow-x-auto sm:overflow-x-visible">
+                    <div id="taskSuccessHeatmap" class="w-[800px] sm:w-full h-[500px]"></div>
+                </div>
             </div>
 
             <!-- Failure Analysis Section -->
@@ -350,8 +354,8 @@
     Plotly.newPlot('costAccuracyPlot', scatter_plot_data.data, {
         ...scatter_plot_data.layout,
         margin: { t: 10, r: 10, b: 40, l: 60 },
-        width: null,  // Make plot responsive
-        height: null  // Make plot responsive
+        width: window.innerWidth < 640 ? 800 : null,  // 640px is sm breakpoint
+        height: 500
     }, {
         responsive: true,
         displayModeBar: false
@@ -360,8 +364,8 @@
     Plotly.newPlot('taskSuccessHeatmap', heatmap_data.data, {
         ...heatmap_data.layout,
         margin: { t: 10, r: 10, b: 40, l: 60 },
-        width: null,  // Make plot responsive
-        height: null  // Make plot responsive
+        width: window.innerWidth < 640 ? 800 : null,  // 640px is sm breakpoint
+        height: 500
     }, {
         responsive: true,
         displayModeBar: false
@@ -460,8 +464,8 @@
             Plotly.react('costAccuracyPlot', data.scatter_plot.data, {
                 ...data.scatter_plot.layout,
                 margin: { t: 10, r: 10, b: 40, l: 60 },
-                width: null,
-                height: null
+                width: window.innerWidth < 640 ? 800 : null,
+                height: 500
             }, {
                 responsive: true,
                 displayModeBar: false
@@ -480,7 +484,7 @@
     // Handle reset pricing
     document.getElementById('resetPricing').addEventListener('click', function() {
         const form = document.getElementById('pricingForm');
-        const defaultPricing = {{ pricing|tojson }};
+        const defaultPricing = JSON.parse('{{ pricing|tojson|safe }}');
         
         // Reset all input fields to their default values
         for (const [model, prices] of Object.entries(defaultPricing)) {
@@ -497,8 +501,9 @@
     
     // Resize plots when window is resized
     window.addEventListener('resize', function() {
-        Plotly.Plots.resize('costAccuracyPlot');
-        Plotly.Plots.resize('taskSuccessHeatmap');
+        const width = window.innerWidth < 640 ? 800 : null;
+        Plotly.relayout('costAccuracyPlot', { width: width, height: 500 });
+        Plotly.relayout('taskSuccessHeatmap', { width: width, height: 500 });
     });
 </script>
 {% endblock %} 

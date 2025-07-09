@@ -534,6 +534,96 @@ def create_app():
             benchmark_name='agentharm'
         )
 
+    @app.route('/taubench_retail')
+    def taubench_retail():
+        # Get models used in TAU-bench Retail benchmark
+        taubench_retail_models = preprocessor.get_models_for_benchmark('taubench_retail')
+        pricing = {model: DEFAULT_PRICING[model] for model in taubench_retail_models if model in DEFAULT_PRICING}
+        
+        # Get data for TAU-bench Retail
+        results_df = preprocessor.get_parsed_results_with_costs('taubench_retail')
+        
+        # Create leaderboard
+        leaderboard_df = create_leaderboard(results_df, benchmark_name='taubench_retail')
+        
+        # Create scatter plot
+        scatter_plot = create_scatter_plot(
+            results_df,
+            "Total Cost",
+            "Accuracy",
+            "Total Cost (in USD)",
+            "Accuracy",
+            ["Agent Name"]
+        )
+        
+        # Convert plot to JSON for rendering
+        scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        # Create heatmap
+        heatmap = create_task_success_heatmap(
+            preprocessor.get_task_success_data('taubench_retail'),
+            'TAU-bench Retail'
+        )
+        heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        # Get last updated time
+        last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
+        
+        return render_template(
+            'taubench_retail.html',
+            leaderboard=leaderboard_df.to_dict('records'),
+            scatter_plot=scatter_plot_json,
+            heatmap=heatmap_json,
+            last_updated=last_updated,
+            pricing=pricing,
+            benchmark_name='taubench_retail'
+        )
+
+    @app.route('/taubench_airline')
+    def taubench_airline():
+        # Get models used in TAU-bench Airline benchmark
+        taubench_airline_models = preprocessor.get_models_for_benchmark('taubench_airline')
+        pricing = {model: DEFAULT_PRICING[model] for model in taubench_airline_models if model in DEFAULT_PRICING}
+        
+        # Get data for TAU-bench Airline
+        results_df = preprocessor.get_parsed_results_with_costs('taubench_airline')
+        
+        # Create leaderboard
+        leaderboard_df = create_leaderboard(results_df, benchmark_name='taubench_airline')
+        
+        # Create scatter plot
+        scatter_plot = create_scatter_plot(
+            results_df,
+            "Total Cost",
+            "Accuracy",
+            "Total Cost (in USD)",
+            "Accuracy",
+            ["Agent Name"]
+        )
+        
+        # Convert plot to JSON for rendering
+        scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        # Create heatmap
+        heatmap = create_task_success_heatmap(
+            preprocessor.get_task_success_data('taubench_airline'),
+            'TAU-bench Airline'
+        )
+        heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        # Get last updated time
+        last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
+        
+        return render_template(
+            'taubench_airline.html',
+            leaderboard=leaderboard_df.to_dict('records'),
+            scatter_plot=scatter_plot_json,
+            heatmap=heatmap_json,
+            last_updated=last_updated,
+            pricing=pricing,
+            benchmark_name='taubench_airline'
+        )
+
     @app.route('/swebench_verified_mini')
     def swebench_verified_mini():
         swebench_models = preprocessor.get_models_for_benchmark('swebench_verified_mini')

@@ -19,11 +19,13 @@ CONTRIBUTORS = [
     {"name": "Marius Hobbhahn", "affiliation": "Apollo Research"},
     {"name": "Maximillian Kaufmann", "affiliation": "UK AISI"},
     {"name": "Morgan McGuire", "affiliation": "Weights & Biases"},
+    {"name": "Nitya Nadgir", "affiliation": "Princeton"},
     {"name": "Omar Khattab", "affiliation": "MIT"},
     {"name": "Parth Asawa", "affiliation": "UC Berkeley"},
     {"name": "Rishi Bommasani", "affiliation": "Stanford"},
     {"name": "Shreya Shankar", "affiliation": "UC Berkeley"},
     {"name": "Shayne Longpre", "affiliation": "MIT"},
+    {"name": "Veniamin Veselovsky", "affiliation": "Princeton"},
     {"name": "William Isaac", "affiliation": "Google DeepMind"},
     {"name": "Yifan Mai", "affiliation": "Stanford"},
     {"name": "Zachary Siegel", "affiliation": "Princeton"}

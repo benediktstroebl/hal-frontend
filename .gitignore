@@ -13,3 +13,5 @@ corebench_archive/*
 test/*
 updates/*
 preprocessed_traces_old/*
+analysis.ipynb
+scratch.py
